@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Customer {{user.username | striptags}} - {{ super() }}{% endblock %}
+
+{% block body %}
+
+	<div class="new-thing">
+		<a href="{{ url_for('newEvent') }}">Request new event</a>
+	</div>
+	
+	{% if items == [] %}
+		<h4>No Pending Events</h4>
+	{% else %}
+		<h3>Pending Events </h3>
+	
+		<ul class="event-list">
+			<form name="cancel">
+		
+		{% for i in items %}
+			<li class="event-list-item">
+			<a class="event-list-link" href="{{url_for('event', eid=i.id)}}">
+				{{ i.eventname | striptags}}
+			</a>
+				{{ i.date.strftime('%d %B %Y') }}
+				<button class="cancel-event" formmethod="post" type="submit" name="cancel" value="{{i.id}}"
+				onclick="return confirm('Do you want to delete {{i.eventname | striptags}}?');"
+				formaction="{{ url_for('rmeventCust', eid=i.id) }}" value="{{i.id}}">
+					Cancel
+				</button>
+			</li>
+		{% endfor %}
+			</form>
+		</ul>
+	{% endif %}
+	
+{% endblock %}
+
+{% block script %}
+	// template
+	f = document.getElementById('flashbox');
+	b = document.getElementById('page-main');
+	if (f != null) b.prepend(f);
+	// template
+{% endblock %}
